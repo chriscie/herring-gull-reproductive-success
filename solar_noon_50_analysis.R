@@ -1,3 +1,6 @@
+#Analysis between covered and uncovered nests using Mann-Whitney U test (Wilcoxon ranked sum) and the normal approximation given large n>100 samples and ties.
+
+#Retrieve csv file of hatch success data
 file_path <- "hatch_success_solar_noon.csv"
 
 coverage_data <- read.csv(file_path)
