@@ -14,23 +14,32 @@ uncovered_values <- coverage_data$hatch_success[coverage_data$group == "uncovere
 #Wilcox test w continuity correction
 test <-wilcox.test(covered_values, uncovered_values, correct = TRUE, EXACT = FALSE, alternative = "two.sided" )
 
+#See results
+print(test)
+
+#Combine vectors and assess ties
+all_values <- c(covered_values, uncovered_values)
+tie_counts <- table(all_values)
+
+#Tie count print
+tie_counts
+
 # Sample sizes
 n1 <- length(covered_values)
 n2 <- length(uncovered_values)
 
-# Extract the Wilcoxon rank-sum statistic (W)
-W <- as.numeric(test$statistic)
-
-# Expected mean and SD of W 
-mu_W <- n1 * n2 / 2
+# Standard deviation (null)
 sigma_W <- sqrt(n1 * n2 * (n1 + n2 + 1) / 12)
 
-# Compute Z manually, matching R’s continuity correction
-Z <- (W - mu_W - 0.5 * sign(W - mu_W)) / sigma_W
-Z
+# Expected mean (null)
+mu_W <- n1 * n2 / 2
 
-#See results
-print(test)
+# Observed W
+W <- as.numeric(test$statistic)
+
+# Compute Z with continuity correction, because there are no distinctive values (all ranks tied) Z cannot be computed?
+Z <- (W - mu_W - 0.5 * sign(W - mu_W))/sigma_W
+Z
 
 #load graph package
 library(ggplot2)
