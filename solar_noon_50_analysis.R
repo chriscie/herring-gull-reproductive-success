@@ -37,7 +37,7 @@ mu_W <- n1 * n2 / 2
 # Observed W
 W <- as.numeric(test$statistic)
 
-# Compute Z with continuity correction, because there are no distinctive values (all ranks tied) Z cannot be computed?
+# Compute Z with continuity correction
 Z <- (W - mu_W - 0.5 * sign(W - mu_W))/sigma_W
 Z
 
