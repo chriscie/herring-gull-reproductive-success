@@ -5,14 +5,16 @@ coverage_data <- read.csv(file_path)
 #Check data and obs #'s
 
 str(coverage_data)
+length(covered_values)
+length(uncovered_values)
 
 #Make values into vectors
 covered_values <- coverage_data$hatch_success[coverage_data$group == "covered"]
 
 uncovered_values <- coverage_data$hatch_success[coverage_data$group == "uncovered"]
 
-#Wilcox test w continuity correction
-test <-wilcox.test(covered_values, uncovered_values, correct = TRUE, EXACT = FALSE, alternative = "two.sided" )
+#Wilcox test (standard)
+test <-wilcox.test(covered_values, uncovered_values, correct = FALSE, EXACT = FALSE, alternative = "two.sided" )
 
 #See results
 print(test)
@@ -24,22 +26,26 @@ tie_counts <- table(all_values)
 #Tie count print
 tie_counts
 
-# Sample sizes
-n1 <- length(covered_values)
-n2 <- length(uncovered_values)
+#Analysis using coin package to retrieve Z for effect size
 
-# Standard deviation (null)
-sigma_W <- sqrt(n1 * n2 * (n1 + n2 + 1) / 12)
+library(coin)
 
-# Expected mean (null)
-mu_W <- n1 * n2 / 2
+# Combine data into data frame
+data <- data.frame(
+  value = c(covered_values, uncovered_values),
+  group = factor(rep(c("covered", "uncovered"), 
+                     times = c(length(covered_values), length(uncovered_values))))
+)
 
-# Observed W
-W <- as.numeric(test$statistic)
+# Wilcoxon rank-sum test (asymptotic normal approximation)
+test.z <- wilcox_test(value ~ group, data = data, distribution = "asymptotic")
 
-# Compute Z with continuity correction
-Z <- (W - mu_W - 0.5 * sign(W - mu_W))/sigma_W
-Z
+# Print full test result
+test.z
+
+# Extract the standardized Z statistic
+z_value <- statistic(test.z, type = "standardized")
+z_value
 
 #load graph package
 library(ggplot2)
@@ -110,11 +116,13 @@ coin::wilcox_test(Hatch.success ~ Group, data = coverage_data, distribution = "e
 
 2.1772/sqrt(length(covered_values)+length(uncovered_values)) 
 
-Z/sqrt(length(covered_values)+length(uncovered_values)) 
+z_value/sqrt(length(covered_values)+length(uncovered_values)) 
 
 #Source citation for manuscript
 citation()
 
 citation(package = "ggplot2")
+
+citation(package = "coin")
 
 
