@@ -19,7 +19,7 @@ test <-wilcox.test(covered_values, uncovered_values, correct = FALSE, EXACT = FA
 #See results
 print(test)
 
-#Combine vectors and assess ties
+#Combine vectors and view ties
 all_values <- c(covered_values, uncovered_values)
 tie_counts <- table(all_values)
 
