@@ -47,6 +47,13 @@ test.z
 z_value <- statistic(test.z, type = "standardized")
 z_value
 
+#Calculate r (effect size) by formula 
+
+2.1772/sqrt(length(covered_values)+length(uncovered_values)) 
+
+z_value/sqrt(length(covered_values)+length(uncovered_values)) 
+
+#Graph showing hatch success of covered and uncovered nests
 #load graph package
 library(ggplot2)
 
@@ -104,19 +111,6 @@ ggplot(plot_data, aes(x = group, y = mean)) +
         axis.title.y = element_text(size = 14),   axis.text.x  = element_text(size = 12),  
         axis.text.y  = element_text(size = 14),  panel.grid.major = element_line(size = .8),
         panel.grid.minor = element_line(size = .8))
-
-#Effect size code work (incomplete)
-
-coverage_data$Group <- as.factor(coverage_data$Group)
-
-#Group is a factor so it doesn't work, needs to compare the numerical groups
-coin::wilcox_test(Hatch.success ~ Group, data = coverage_data, distribution = "exact")
-
-#Calculate r (effect size) by formula 
-
-2.1772/sqrt(length(covered_values)+length(uncovered_values)) 
-
-z_value/sqrt(length(covered_values)+length(uncovered_values)) 
 
 #Source citation for manuscript
 citation()
