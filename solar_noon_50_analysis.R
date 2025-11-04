@@ -1,4 +1,4 @@
-file_path <- "Nest Monitoring Data Solar Noon.csv"
+file_path <- "hatch_success_solar_noon.csv"
 
 coverage_data <- read.csv(file_path)
 
@@ -7,12 +7,27 @@ coverage_data <- read.csv(file_path)
 str(coverage_data)
 
 #Make values into vectors
-covered_values <- coverage_data$Hatch.success[coverage_data$Group == "covered"]
+covered_values <- coverage_data$hatch_success[coverage_data$group == "covered"]
 
-uncovered_values <- coverage_data$Hatch.success[coverage_data$Group == "uncovered"]
+uncovered_values <- coverage_data$hatch_success[coverage_data$group == "uncovered"]
 
 #Wilcox test w continuity correction
 test <-wilcox.test(covered_values, uncovered_values, correct = TRUE, EXACT = FALSE, alternative = "two.sided" )
+
+# Sample sizes
+n1 <- length(covered_values)
+n2 <- length(uncovered_values)
+
+# Extract the Wilcoxon rank-sum statistic (W)
+W <- as.numeric(test$statistic)
+
+# Expected mean and SD of W 
+mu_W <- n1 * n2 / 2
+sigma_W <- sqrt(n1 * n2 * (n1 + n2 + 1) / 12)
+
+# Compute Z manually, matching R’s continuity correction
+Z <- (W - mu_W - 0.5 * sign(W - mu_W)) / sigma_W
+Z
 
 #See results
 print(test)
@@ -76,17 +91,19 @@ ggplot(plot_data, aes(x = group, y = mean)) +
         panel.grid.minor = element_line(size = .8))
 
 #Effect size code work (incomplete)
-#"coin" package?
 
 coverage_data$Group <- as.factor(coverage_data$Group)
 
 #Group is a factor so it doesn't work, needs to compare the numerical groups
 coin::wilcox_test(Hatch.success ~ Group, data = coverage_data, distribution = "exact")
 
-#Calculate r
+#Calculate r (effect size) by formula 
 
 2.1772/sqrt(length(covered_values)+length(uncovered_values)) 
 
+Z/sqrt(length(covered_values)+length(uncovered_values)) 
+
+#Source citation for manuscript
 citation()
 
 citation(package = "ggplot2")
