@@ -73,6 +73,17 @@ test.perm <- wilcox_test(value ~ group, data = perm_data, distribution = approxi
 # See results
 test.perm
 
+# Get Z statistic from coin object
+Z_value_perm <- statistic(test.perm, type = "standardized")
+
+# Total sample size
+N_total <- nrow(perm_data)
+
+# Effect size r
+r_effect <- Z_value_perm / sqrt(N_total)
+
+r_effect
+
 #Graph showing hatch success of covered and uncovered nests
 #load graph package
 library(ggplot2)
