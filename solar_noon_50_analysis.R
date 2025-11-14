@@ -54,11 +54,19 @@ z_value
 
 2.1772/sqrt(length(covered_values)+length(uncovered_values)) 
 
-z_value/sqrt(length(covered_values)+length(uncovered_values)) 
+z_value/sqrt(length(covered_values)+length(uncovered_values))
+
+library(coin)
+
+# new variable name for the data frame to avoid conflicts
+perm_data <- data.frame(
+  value = c(covered_values, uncovered_values),
+  group = factor(rep(c("covered", "uncovered"), 
+                     times = c(length(covered_values), length(uncovered_values))))
+)
 
 # Wilcoxon rank-sum test using Monte Carlo simulation for P-value ("pure" permutation)
-# This is the "pure" permutation approach
-test.perm <- wilcox_test(value ~ group, data = data, distribution = "approximate", n = 10000) 
+test.perm <- wilcox_test(value ~ group, data = perm_data, distribution = approximate(nresample = 10000)) 
 
 # Use a large number of permutations for stability
 
