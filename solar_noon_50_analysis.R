@@ -56,6 +56,15 @@ z_value
 
 z_value/sqrt(length(covered_values)+length(uncovered_values)) 
 
+# Wilcoxon rank-sum test using Monte Carlo simulation for P-value ("pure" permutation)
+# This is the "pure" permutation approach
+test.perm <- wilcox_test(value ~ group, data = data, distribution = "approximate",n = 10000) 
+
+# Use a large number of permutations for stability
+
+# See results
+print(test.perm)
+
 #Graph showing hatch success of covered and uncovered nests
 #load graph package
 library(ggplot2)
