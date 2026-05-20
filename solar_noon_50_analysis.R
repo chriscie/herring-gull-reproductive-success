@@ -88,17 +88,32 @@ r_effect
 #load graph package
 library(ggplot2)
 
-#Function for CI interval
+# Function for Wilson Score CI interval
 calc_ci <- function(x) {
+  # Remove any NA values safely to avoid calculation errors
+  x <- na.omit(x)
+  
   n <- length(x)
-  mean_x <- mean(x)
-  se_x <- sd(x) / sqrt(n)
-  t_crit <- qt(0.975, df = n - 1)
-  lower <- mean_x - t_crit * se_x
-  upper <- mean_x + t_crit * se_x
-  list(mean = mean_x, lower = lower, upper = upper)
+  p <- mean(x)
+  z <- 1.96 # Standard z-score multiplier for a 95% confidence level
+  
+  # The Wilson Score algebraic components
+  denominator <- 2 * (n + z^2)
+  center_point <- 2 * n * p + z^2
+  variance_spread <- z * sqrt(z^2 + 4 * n * p * (1 - p))
+  
+  # Calculate upper and lower bounds
+  lower <- (center_point - variance_spread) / denominator
+  upper <- (center_point + variance_spread) / denominator
+  
+  # Strict boundary protection to keep limits locked between 0 and 1 (0% and 100%)
+  lower <- max(0, lower)
+  upper <- min(1, upper)
+  
+  list(mean = p, lower = lower, upper = upper)
 }
 
+# Run the updated function on your treatment groups
 ci_covered <- calc_ci(covered_values)
 ci_uncovered <- calc_ci(uncovered_values)
 
@@ -111,6 +126,7 @@ cat("Uncovered:\n")
 cat("Mean:", round(ci_uncovered$mean, 4), "\n")
 cat("95% CI: [", round(ci_uncovered$lower, 4), ",", round(ci_uncovered$upper, 4), "]\n\n")
 
+# Calculate overall pooled mean across both groups
 overall_mean <- mean(c(covered_values, uncovered_values))
 
 # Point graph with confidence intervals
