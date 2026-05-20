@@ -128,7 +128,7 @@ ggplot(plot_data, aes(x = group, y = mean)) +
   geom_hline(yintercept = overall_mean, linetype = "dashed", color = "black") +
   geom_label(
     aes(x = 2.6, y = 1.05),
-    label = paste0("Overall hatch success:\n", round(overall_mean, 3)),
+    label = paste0("Mean hatch succes (per nest):\n", round(overall_mean, 3)),
     fill = "white", color = "black", fontface = "bold", size = 4, hjust = 1
   ) +
   ylim(0, 1.1) +
